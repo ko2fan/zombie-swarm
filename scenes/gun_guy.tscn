@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://da6g40618pe54"]
+[gd_scene load_steps=5 format=3 uid="uid://da6g40618pe54"]
 
 [ext_resource type="Script" path="res://scripts/unit.gd" id="1_4gxoq"]
 [ext_resource type="Texture2D" uid="uid://b4m1kele6qnjf" path="res://sprites/Man/Walk_gun/Walk_gun_000.png" id="2_3bfj1"]
+[ext_resource type="PackedScene" uid="uid://rm5g86rfi8j4" path="res://scenes/state_machine.tscn" id="3_873m5"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_cm50x"]
 radius = 42.0
@@ -15,3 +16,6 @@ texture = ExtResource("2_3bfj1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_cm50x")
+
+[node name="StateMachine" parent="." node_paths=PackedStringArray("node") instance=ExtResource("3_873m5")]
+node = NodePath("..")
