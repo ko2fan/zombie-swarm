@@ -1,0 +1,28 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "background.tsx": {
+            "dynamicWrapping": true
+        }
+    },
+    "last.imagePath": "/home/david/Projects/ZombieSwarm/sprites",
+    "map.height": 160,
+    "map.lastUsedFormat": "tmx",
+    "map.layerDataFormat": "3",
+    "map.tileHeight": 64,
+    "map.tileWidth": 64,
+    "map.width": 240,
+    "openFiles": [
+    ],
+    "project": "zombie-swarm.tiled-project",
+    "recentFiles": [
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.type": 1
+}

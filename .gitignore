@@ -4,6 +4,7 @@
 export.cfg
 export_presets.cfg
 sprites/*
+addons/
 
 # Imported translations (automatically generated from CSV files)
 *.translation

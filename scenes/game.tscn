@@ -1,3 +1,15 @@
-[gd_scene format=3 uid="uid://ra644kjmgfek"]
+[gd_scene load_steps=4 format=3 uid="uid://ra644kjmgfek"]
+
+[ext_resource type="PackedScene" uid="uid://2dmm4hae088x" path="res://scenes/background.tscn" id="1_up02q"]
+[ext_resource type="PackedScene" uid="uid://da6g40618pe54" path="res://scenes/gun_guy.tscn" id="2_4iyrq"]
+[ext_resource type="PackedScene" uid="uid://byp1kv7mvbq8m" path="res://scenes/gun_girl.tscn" id="3_qpdjn"]
 
 [node name="Game" type="Node2D"]
+
+[node name="Background" parent="." instance=ExtResource("1_up02q")]
+
+[node name="GunGuy" parent="." instance=ExtResource("2_4iyrq")]
+position = Vector2(655, 321)
+
+[node name="GunGirl" parent="." instance=ExtResource("3_qpdjn")]
+position = Vector2(549, 320)
