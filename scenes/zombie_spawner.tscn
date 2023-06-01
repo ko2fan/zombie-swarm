@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://djycdj316iqlg"]
+
+[ext_resource type="Script" path="res://scripts/zombie_spawner.gd" id="1_btneg"]
+
+[node name="ZombieSpawner" type="Node2D"]
+script = ExtResource("1_btneg")
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
