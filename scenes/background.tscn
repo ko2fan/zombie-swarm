@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" path="res://maps/map-01.tscn" id="1_iby1o"]
 
 [node name="Background" type="Node2D"]
+z_index = -100
 
 [node name="map-01" parent="." instance=ExtResource("1_iby1o")]
 position = Vector2(-7534, -5382)
