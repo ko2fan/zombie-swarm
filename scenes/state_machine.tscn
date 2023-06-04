@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://rm5g86rfi8j4"]
+[gd_scene load_steps=6 format=3 uid="uid://rm5g86rfi8j4"]
 
 [ext_resource type="Script" path="res://scripts/state_machine.gd" id="1_lqnlq"]
 [ext_resource type="Script" path="res://scripts/idle_state.gd" id="2_s8lt1"]
 [ext_resource type="Script" path="res://scripts/attack_state.gd" id="3_ei801"]
 [ext_resource type="Script" path="res://scripts/move_state.gd" id="4_v3llj"]
+[ext_resource type="Script" path="res://scripts/HuntState.gd" id="5_0luo4"]
 
 [node name="StateMachine" type="Node"]
 script = ExtResource("1_lqnlq")
@@ -16,3 +17,6 @@ script = ExtResource("3_ei801")
 
 [node name="MoveState" type="Node" parent="."]
 script = ExtResource("4_v3llj")
+
+[node name="HuntState" type="Node" parent="."]
+script = ExtResource("5_0luo4")

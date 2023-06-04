@@ -10,7 +10,7 @@ func enter(node: Node):
 func exit(node: Node):
 	print(node.name + " has exited the idle state")
 	
-func update(node: Node, delta: float):
+func update(node: Node, _delta: float):
 	# Look for enemy
 	var target = node.get_first_visible_enemy()
 	if target != null:

@@ -1,11 +1,11 @@
 extends Node
 class_name State
 
-func enter(node: Node):
+func enter(_node: Node):
 	pass
 	
-func exit(node: Node):
+func exit(_node: Node):
 	pass
 	
-func update(node: Node, delta: float):
+func update(_node: Node, _delta: float):
 	pass

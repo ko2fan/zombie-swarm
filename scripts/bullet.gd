@@ -15,7 +15,7 @@ func _physics_process(delta):
 	if raycast.is_colliding():
 		var collider = raycast.get_collider()
 		if collider.is_in_group("enemies"):
-			collider.take_damage(50)
+			collider.take_damage(20)
 			die()
 		
 func die():

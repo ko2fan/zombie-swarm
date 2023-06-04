@@ -6,6 +6,7 @@ var bullet_pool = []
 @onready var bullet_prefab = preload("res://scenes/bullet.tscn")
 
 func _ready():
+	randomize()
 	get_node("/root/Game/ZombieSpawner").enemy_spawned.connect(on_enemy_spawn)
 	for bullet in range(20):
 		var bullet_instance = bullet_prefab.instantiate()

@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://c0pict27kfmd8"]
+[gd_scene load_steps=5 format=3 uid="uid://c0pict27kfmd8"]
 
 [ext_resource type="Script" path="res://scripts/Zombie.gd" id="1_3d5o5"]
 [ext_resource type="Texture2D" uid="uid://cvu7resdp8vs7" path="res://sprites/Zombie_big_head/Walk/walk_000.png" id="2_e0te7"]
+[ext_resource type="PackedScene" uid="uid://rm5g86rfi8j4" path="res://scenes/state_machine.tscn" id="3_x2kbs"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_el054"]
 radius = 49.0408
@@ -12,8 +13,18 @@ collision_mask = 3
 script = ExtResource("1_3d5o5")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+rotation = -1.5708
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("2_e0te7")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_el054")
+
+[node name="Raycast1" type="RayCast2D" parent="."]
+
+[node name="Raycast2" type="RayCast2D" parent="."]
+
+[node name="Raycast3" type="RayCast2D" parent="."]
+
+[node name="StateMachine" parent="." node_paths=PackedStringArray("node") instance=ExtResource("3_x2kbs")]
+node = NodePath("..")
