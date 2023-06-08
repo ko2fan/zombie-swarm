@@ -67,7 +67,7 @@ func attack(delta: float):
 	var bullet = GameState.get_bullet()
 	if bullet:
 		bullet.global_position = self.global_position
-		bullet.rotation = bullet.get_angle_to(enemy_target.global_position)
+		bullet.rotation = self.rotation
 
 func look_around():
 	pass

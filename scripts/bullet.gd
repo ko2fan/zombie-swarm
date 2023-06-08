@@ -2,9 +2,11 @@ extends Area2D
 class_name Bullet
 
 @onready var raycast = $RayCast2D
+
+@export var speed = 700
+@export var lifetime = 4
+
 var alive = false
-var speed = 700
-var lifetime = 4
 
 func _physics_process(delta):
 	position += Vector2(speed * delta, 0).rotated(rotation)

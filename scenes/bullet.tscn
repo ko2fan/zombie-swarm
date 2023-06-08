@@ -14,6 +14,7 @@ script = ExtResource("1_curca")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 z_index = 100
+rotation = 1.5708
 scale = Vector2(0.11, 0.11)
 texture = ExtResource("1_34cqc")
 

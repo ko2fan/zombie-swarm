@@ -3,12 +3,28 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "map-01.tmx",
     "expandedProjectPaths": [
+        "."
     ],
+    "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "background.tsx": {
-            "dynamicWrapping": true
+            "dynamicWrapping": true,
+            "scaleInDock": 0.06
+        },
+        "map-01.tmx": {
+            "scale": 0.33,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 7753.030303030303,
+                "y": 5675.757575757576
+            }
+        },
+        "objects.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 0.06,
+            "scaleInEditor": 0.06
         }
     },
     "last.imagePath": "/home/david/Projects/ZombieSwarm/sprites",
@@ -19,9 +35,13 @@
     "map.tileWidth": 64,
     "map.width": 240,
     "openFiles": [
+        "map-01.tmx",
+        "objects.tsx"
     ],
     "project": "zombie-swarm.tiled-project",
     "recentFiles": [
+        "objects.tsx",
+        "map-01.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.type": 1
