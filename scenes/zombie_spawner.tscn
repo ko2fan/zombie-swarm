@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://djycdj316iqlg"]
+[gd_scene load_steps=3 format=3 uid="uid://djycdj316iqlg"]
 
 [ext_resource type="Script" path="res://scripts/zombie_spawner.gd" id="1_btneg"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mvk6l"]
+size = Vector2(229.5, 196.5)
 
 [node name="ZombieSpawner" type="Node2D"]
 script = ExtResource("1_btneg")
@@ -9,4 +12,27 @@ script = ExtResource("1_btneg")
 wait_time = 3.0
 autostart = true
 
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_mvk6l")
+
+[node name="SpawnPoints" type="Node2D" parent="."]
+
+[node name="SpawnPoint" type="Node2D" parent="SpawnPoints"]
+position = Vector2(-61, -56)
+
+[node name="SpawnPoint2" type="Node2D" parent="SpawnPoints"]
+position = Vector2(61, -56)
+
+[node name="SpawnPoint3" type="Node2D" parent="SpawnPoints"]
+position = Vector2(-58, 40)
+
+[node name="SpawnPoint4" type="Node2D" parent="SpawnPoints"]
+position = Vector2(54, 47)
+
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_area_2d_body_exited"]

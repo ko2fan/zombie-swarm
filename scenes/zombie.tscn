@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://c0pict27kfmd8"]
+[gd_scene load_steps=6 format=3 uid="uid://c0pict27kfmd8"]
 
 [ext_resource type="Script" path="res://scripts/Zombie.gd" id="1_3d5o5"]
 [ext_resource type="Texture2D" uid="uid://cvu7resdp8vs7" path="res://sprites/Zombie_big_head/Walk/walk_000.png" id="2_e0te7"]
@@ -7,9 +7,12 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_el054"]
 radius = 49.0408
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_vlbti"]
+radius = 126.004
+
 [node name="Zombie" type="CharacterBody2D"]
-collision_layer = 3
-collision_mask = 3
+collision_layer = 7
+collision_mask = 7
 script = ExtResource("1_3d5o5")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -28,3 +31,11 @@ shape = SubResource("CircleShape2D_el054")
 
 [node name="StateMachine" parent="." node_paths=PackedStringArray("node") instance=ExtResource("3_x2kbs")]
 node = NodePath("..")
+
+[node name="AvoidanceArea" type="Area2D" parent="."]
+
+[node name="AvoidanceCircle" type="CollisionShape2D" parent="AvoidanceArea"]
+shape = SubResource("CircleShape2D_vlbti")
+
+[connection signal="body_entered" from="AvoidanceArea" to="." method="_on_avoidance_area_body_entered"]
+[connection signal="body_exited" from="AvoidanceArea" to="." method="_on_avoidance_area_body_exited"]

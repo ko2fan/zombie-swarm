@@ -26,6 +26,8 @@ var enemy_target
 var random_amount
 var attack_timer
 
+var nearby_allies = []
+
 var interests = []
 var dangers = []
 
@@ -79,6 +81,7 @@ func is_facing_target() -> bool:
 
 func face_target(delta: float):
 	rotate(get_angle_to(enemy_target.global_position) * delta)
+	avoid_allies()
 	
 # Unit should shoot enemy when in range
 func is_target_in_visible_range() -> bool:
@@ -100,7 +103,6 @@ func attack(delta: float):
 	attack_timer = 0
 	raycast_middle.target_position = Vector2(attack_range, 0).rotated(rotation)
 	if raycast_middle.is_colliding():
-		print("Found enemy with middle raycast")
 		var collider = raycast_middle.get_collider()
 		collider.take_damage(15)
 	
@@ -109,3 +111,15 @@ func look_around(delta):
 		random_amount = randf_range(-1.25, 1.25)
 	rotate(random_amount * delta)
 	pass
+
+func avoid_allies():
+	for ally in nearby_allies:
+		lerp_angle(rotation, ally.rotation * PI, 0.6)
+
+func _on_avoidance_area_body_entered(body):
+	if body.is_in_group("enemies"):
+		nearby_allies.append(body)
+	
+func _on_avoidance_area_body_exited(body):
+	if body.is_in_group("enemies"):
+		nearby_allies.erase(body)

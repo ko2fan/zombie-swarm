@@ -2,7 +2,7 @@ extends CharacterBody2D
 
 @export var visible_range : float = 750
 @export var attack_range : float = 750
-@export var max_shoot_time : float = 0.8
+@export var max_shoot_time : float = 2.1
 @export var damage_dealt : float = 20
 @export var health : float = 100
 @export var speed : float = 15
