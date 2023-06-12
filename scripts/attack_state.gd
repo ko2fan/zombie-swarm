@@ -13,13 +13,13 @@ func exit(node: Node):
 	
 func update(node: Node, delta: float):
 	if node.is_target_in_visible_range():
-		if node.is_facing_target():
-			if node.is_target_in_attack_range():
+		if node.is_target_in_attack_range():
+			if node.is_facing_target():
 				node.attack(delta)
 			else:
-				state_machine.change_to_state(move_state)
+				node.face_target(delta)
 		else:
-			node.face_target(delta)
+			state_machine.change_to_state(move_state)	
 	else:
 		node.set_target(null)
 		state_machine.change_to_state(idle_state)

@@ -11,7 +11,7 @@ extends CharacterBody2D
 @export var health : float = 100
 @export var speed : float = 25
 @export var visible_range : float = 1000
-@export var attack_range : float = 100
+@export var attack_range : float = 50
 @export var time_between_attacks : float = 1.2
 
 @onready var state_machine : StateMachine = $StateMachine
@@ -21,10 +21,13 @@ extends CharacterBody2D
 @onready var raycast_middle = $Raycast1
 @onready var raycast_left = $Raycast2
 @onready var raycast_right = $Raycast3
+@onready var raycast_visible = $Raycast4
+@onready var avoidance_area = $AvoidanceArea
 
 var enemy_target
 var random_amount
 var attack_timer
+var elapsed = 0
 
 var nearby_allies = []
 
@@ -40,28 +43,36 @@ func _init():
 	
 func _ready():
 	state_machine.change_to_state(idle_state)
+	for i in range(0, 8):
+		interests.append(0)
+		dangers.append(0)
 	
-#func _draw():
-#	draw_line(self.position, Vector2(visible_range, 0).rotated(rotation), Color.RED)
-#	draw_line(self.position, Vector2(visible_range, 0).rotated(rotation - 1.25), Color.YELLOW)
-#	draw_line(self.position, Vector2(visible_range, 0).rotated(rotation + 1.25), Color.CYAN)
+func _draw():
+	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(0), Color.RED)
+	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(0.78), Color.DARK_RED)
+	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(1.5), Color.ROSY_BROWN)
+	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(2.38), Color.REBECCA_PURPLE)
+	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(3.141), Color.ROYAL_BLUE)
+	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(-2.38), Color.LAWN_GREEN)
+	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(-1.5), Color.GHOST_WHITE)
+	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(-0.78), Color.YELLOW)
 
 func get_first_visible_enemy() -> Node2D:
 	raycast_middle.target_position = Vector2(visible_range, 0).rotated(rotation)
 	if raycast_middle.is_colliding():
-		print("Found enemy with middle raycast")
 		var collider = raycast_middle.get_collider()
-		return collider
+		if collider != null && not collider.is_in_group("enemies"):
+			return collider
 	raycast_left.target_position = Vector2(visible_range, 0).rotated(rotation - 1.25)
 	if raycast_left.is_colliding():
-		print("Found enemy with left raycast")
 		var collider = raycast_left.get_collider()
-		return collider
+		if collider != null && not collider.is_in_group("enemies"):
+			return collider
 	raycast_right.target_position = Vector2(visible_range, 0).rotated(rotation + 1.25)
 	if raycast_right.is_colliding():
-		print("Found enemy with right raycast")
 		var collider = raycast_right.get_collider()
-		return collider
+		if collider != null && not collider.is_in_group("enemies"):
+			return collider
 	return null
 	
 func take_damage(damage_amount):
@@ -81,7 +92,7 @@ func is_facing_target() -> bool:
 
 func face_target(delta: float):
 	rotate(get_angle_to(enemy_target.global_position) * delta)
-	avoid_allies()
+	#avoid_allies()
 	
 # Unit should shoot enemy when in range
 func is_target_in_visible_range() -> bool:
@@ -90,8 +101,76 @@ func is_target_in_visible_range() -> bool:
 func is_target_in_attack_range() -> bool:
 	return enemy_target != null && (enemy_target.global_position.distance_to(self.global_position) <= attack_range)
 
-func move_to_target():
-	pass
+func steer(delta):
+	elapsed += delta
+	
+	var areas = avoidance_area.get_overlapping_areas()
+	for area in areas:
+		# get direction to each area, set as danger
+		pass
+		
+	# reset interests and dangers
+	for interest in interests:
+		interest = 0
+	for danger in dangers:
+		danger = 0
+	
+	if enemy_target != null:
+		interests[0] = find_target(0)		
+		interests[1] = find_target(0.78)
+		interests[2] = find_target(1.5)
+		interests[3] = find_target(2.38)
+		interests[4] = find_target(PI)
+		interests[5] = find_target(-2.38)
+		interests[6] = find_target(-1.5)
+		interests[7] = find_target(-0.78)
+				
+		if interests.filter(func(number): return number > 0) == []:
+			pass#print("Target not found")
+	
+	var steering = []
+	for index in range(0, 8):
+		steering.append(interests[index] - dangers[index])
+		
+	if steering.filter(func(number): return number > 0) != []:
+		print("Steering: " + str(steering))
+	
+	var best_dir = -99
+	var best_index = -1
+	var index = 0
+	for dir in steering:
+		if dir > best_dir:
+			best_dir = dir
+			best_index = index
+		index += 1
+	if best_index:
+		print(best_index)
+			
+	var new_dir = Vector2.ZERO
+	match best_index:
+		0:
+			new_dir = Vector2(1, 0)
+		1:
+			new_dir = Vector2(1, 1)
+		2:
+			new_dir = Vector2(0, 1)
+		3:
+			new_dir = Vector2(-1, 1)
+		4:
+			new_dir = Vector2(-1, 0)
+		5:
+			new_dir = Vector2(-1, -1)
+		6:
+			new_dir = Vector2(0, -1)
+		7:
+			new_dir = Vector2(1, -1)
+	
+	if new_dir != Vector2.ZERO:
+		if elapsed > 1:
+			elapsed = 0
+		print(get_angle_to(new_dir.rotated(rotation)))
+		print(rotation)
+		rotation = lerp_angle(rotation, get_angle_to(new_dir.rotated(rotation)), elapsed)
 	
 func move(delta: float):
 	position += Vector2(speed * delta, 0).rotated(rotation)
@@ -105,16 +184,19 @@ func attack(delta: float):
 	if raycast_middle.is_colliding():
 		var collider = raycast_middle.get_collider()
 		collider.take_damage(15)
+		print("Zombie ate the player!")
 	
 func look_around(delta):
 	if random_amount == 999 or random_amount == rotation:
-		random_amount = randf_range(-1.25, 1.25)
-	rotate(random_amount * delta)
-	pass
+		random_amount = randf_range(-PI, PI)
+		elapsed = 0
+	#rotate(random_amount * delta)
+	elapsed += delta
+	rotation = lerp_angle(rotation, random_amount, elapsed)
 
 func avoid_allies():
 	for ally in nearby_allies:
-		lerp_angle(rotation, ally.rotation * PI, 0.6)
+		rotation = lerp_angle(rotation, ally.rotation + PI, 0.6)
 
 func _on_avoidance_area_body_entered(body):
 	if body.is_in_group("enemies"):
@@ -123,3 +205,11 @@ func _on_avoidance_area_body_entered(body):
 func _on_avoidance_area_body_exited(body):
 	if body.is_in_group("enemies"):
 		nearby_allies.erase(body)
+		
+func find_target(angle: float) -> int:
+	raycast_visible.target_position = Vector2(visible_range, 0).rotated(angle)
+	raycast_visible.force_raycast_update()
+	if raycast_visible.is_colliding():
+		if not raycast_visible.get_collider().is_in_group("enemies"):
+			return 100
+	return 0
