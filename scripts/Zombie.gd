@@ -11,7 +11,7 @@ extends CharacterBody2D
 @export var health : float = 100
 @export var speed : float = 25
 @export var visible_range : float = 1000
-@export var attack_range : float = 50
+@export var attack_range : float = 105
 @export var time_between_attacks : float = 1.2
 
 @onready var state_machine : StateMachine = $StateMachine
@@ -28,6 +28,7 @@ var enemy_target
 var random_amount
 var attack_timer
 var elapsed = 0
+var cached_index = -1
 
 var nearby_allies = []
 
@@ -88,7 +89,7 @@ func set_target(target):
 
 func is_facing_target() -> bool:
 	var angle = get_angle_to(enemy_target.global_position)
-	return (angle < 0.01 && angle > -0.01)
+	return (angle < 0.15 && angle > -0.15)
 
 func face_target(delta: float):
 	rotate(get_angle_to(enemy_target.global_position) * delta)
@@ -135,7 +136,7 @@ func steer(delta):
 	if steering.filter(func(number): return number > 0) != []:
 		print("Steering: " + str(steering))
 	
-	var best_dir = -99
+	var best_dir = 0
 	var best_index = -1
 	var index = 0
 	for dir in steering:
@@ -143,34 +144,37 @@ func steer(delta):
 			best_dir = dir
 			best_index = index
 		index += 1
-	if best_index:
-		print(best_index)
-			
-	var new_dir = Vector2.ZERO
+	if best_index != -1:
+		print("Found new best index: " + str(best_index))
+		cached_index = best_index
+	else:
+		best_index = cached_index
+	
+	var new_dir = -PI
 	match best_index:
 		0:
-			new_dir = Vector2(1, 0)
+			new_dir = 0
 		1:
-			new_dir = Vector2(1, 1)
+			new_dir = 0.78
 		2:
-			new_dir = Vector2(0, 1)
+			new_dir = 1.5
 		3:
-			new_dir = Vector2(-1, 1)
+			new_dir = 2.38
 		4:
-			new_dir = Vector2(-1, 0)
+			new_dir = PI
 		5:
-			new_dir = Vector2(-1, -1)
+			new_dir = -2.38
 		6:
-			new_dir = Vector2(0, -1)
+			new_dir = -1.5
 		7:
-			new_dir = Vector2(1, -1)
+			new_dir = -0.78
 	
-	if new_dir != Vector2.ZERO:
+	if new_dir != -PI:
 		if elapsed > 1:
 			elapsed = 0
-		print(get_angle_to(new_dir.rotated(rotation)))
-		print(rotation)
-		rotation = lerp_angle(rotation, get_angle_to(new_dir.rotated(rotation)), elapsed)
+		print("New dir: " + str(new_dir))
+		print("Curr rot: " + str(rotation))
+		rotation = lerp_angle(rotation, new_dir + rotation, elapsed)
 	
 func move(delta: float):
 	position += Vector2(speed * delta, 0).rotated(rotation)
@@ -180,7 +184,7 @@ func attack(delta: float):
 	if attack_timer < time_between_attacks:
 		return
 	attack_timer = 0
-	raycast_middle.target_position = Vector2(attack_range, 0).rotated(rotation)
+	raycast_middle.target_position = Vector2(attack_range + 10, 0).rotated(rotation)
 	if raycast_middle.is_colliding():
 		var collider = raycast_middle.get_collider()
 		collider.take_damage(15)

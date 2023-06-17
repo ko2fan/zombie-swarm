@@ -14,12 +14,15 @@ func exit(node: Node):
 func update(node: Node, delta: float):
 	node.move(delta)
 	if node.is_target_in_visible_range():
-		node.steer(delta)
 		if node.is_target_in_attack_range():
+			print(node.name + " is in attack range")
 			if node.is_facing_target():
 				state_machine.change_to_state(attack_state)
 			else:
 				node.face_target(delta)
+		else:
+			print("Range: " + str(node.global_position.distance_to(node.enemy_target.global_position)))
+			node.steer(delta)
 	else:
 		node.set_target(null)
 		state_machine.change_to_state(idle_state)

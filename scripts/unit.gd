@@ -41,7 +41,7 @@ func take_damage(damage_amount):
 # Unit should turn towards enemy
 func is_facing_target() -> bool:
 	var angle = get_angle_to(enemy_target.global_position)
-	return (angle < 0.01 && angle > -0.01)
+	return (angle < 0.1 && angle > -0.1)
 
 func face_target(delta: float):
 	rotate(get_angle_to(enemy_target.global_position) * delta)

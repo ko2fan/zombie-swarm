@@ -15,6 +15,7 @@ func update(node: Node, delta: float):
 	if node.is_target_in_visible_range():
 		if node.is_target_in_attack_range():
 			if node.is_facing_target():
+				print(node.name + " is attacking")
 				node.attack(delta)
 			else:
 				node.face_target(delta)
