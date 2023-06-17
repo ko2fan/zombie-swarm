@@ -14,6 +14,7 @@ func _physics_process(delta):
 	if lifetime <= 0:
 		die()
 	raycast.target_position = Vector2(speed * delta, 0).rotated(rotation)
+	raycast.force_raycast_update()
 	if raycast.is_colliding():
 		var collider = raycast.get_collider()
 		if collider.is_in_group("enemies"):

@@ -41,6 +41,7 @@ func _init():
 	add_to_group("enemies")
 	random_amount = 999
 	attack_timer = 0
+	randomize()
 	
 func _ready():
 	state_machine.change_to_state(idle_state)
@@ -48,15 +49,15 @@ func _ready():
 		interests.append(0)
 		dangers.append(0)
 	
-func _draw():
-	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(0), Color.RED)
-	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(0.78), Color.DARK_RED)
-	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(1.5), Color.ROSY_BROWN)
-	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(2.38), Color.REBECCA_PURPLE)
-	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(3.141), Color.ROYAL_BLUE)
-	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(-2.38), Color.LAWN_GREEN)
-	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(-1.5), Color.GHOST_WHITE)
-	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(-0.78), Color.YELLOW)
+#func _draw():
+#	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(0), Color.RED)
+#	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(0.78), Color.DARK_RED)
+#	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(1.5), Color.ROSY_BROWN)
+#	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(2.38), Color.REBECCA_PURPLE)
+#	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(3.141), Color.ROYAL_BLUE)
+#	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(-2.38), Color.LAWN_GREEN)
+#	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(-1.5), Color.GHOST_WHITE)
+#	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(-0.78), Color.YELLOW)
 
 func get_first_visible_enemy() -> Node2D:
 	raycast_middle.target_position = Vector2(visible_range, 0).rotated(rotation)
@@ -172,8 +173,6 @@ func steer(delta):
 	if new_dir != -PI:
 		if elapsed > 1:
 			elapsed = 0
-		print("New dir: " + str(new_dir))
-		print("Curr rot: " + str(rotation))
 		rotation = lerp_angle(rotation, new_dir + rotation, elapsed)
 	
 func move(delta: float):
@@ -184,15 +183,16 @@ func attack(delta: float):
 	if attack_timer < time_between_attacks:
 		return
 	attack_timer = 0
-	raycast_middle.target_position = Vector2(attack_range + 10, 0).rotated(rotation)
+	raycast_middle.target_position = Vector2(attack_range + 100, 0).rotated(rotation)
+	raycast_middle.force_raycast_update()
 	if raycast_middle.is_colliding():
 		var collider = raycast_middle.get_collider()
 		collider.take_damage(15)
-		print("Zombie ate the player!")
+		print("Zombie " + name + " ate the player!")
 	
 func look_around(delta):
 	if random_amount == 999 or random_amount == rotation:
-		random_amount = randf_range(-PI, PI)
+		random_amount = randf_range(0, PI * 2)
 		elapsed = 0
 	#rotate(random_amount * delta)
 	elapsed += delta
