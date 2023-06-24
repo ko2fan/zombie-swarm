@@ -45,11 +45,12 @@ func _init():
 	
 func _ready():
 	state_machine.change_to_state(idle_state)
-	for i in range(0, 8):
+	for i in range(0, 9):
 		interests.append(0)
 		dangers.append(0)
 	
 #func _draw():
+#	draw_line(raycast_middle.position, raycast_middle.target_position, Color.FLORAL_WHITE)
 #	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(0), Color.RED)
 #	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(0.78), Color.DARK_RED)
 #	draw_line(raycast_visible.position, Vector2(visible_range, 0).rotated(1.5), Color.ROSY_BROWN)
@@ -90,7 +91,7 @@ func set_target(target):
 
 func is_facing_target() -> bool:
 	var angle = get_angle_to(enemy_target.global_position)
-	return (angle < 0.15 && angle > -0.15)
+	return (angle < 0.1 && angle > -0.1)
 
 func face_target(delta: float):
 	rotate(get_angle_to(enemy_target.global_position) * delta)
@@ -117,25 +118,50 @@ func steer(delta):
 	for danger in dangers:
 		danger = 0
 	
+	#0.39
+	#0.78
+	#1.17
+	#1.5
 	if enemy_target != null:
 		interests[0] = find_target(0)		
-		interests[1] = find_target(0.78)
-		interests[2] = find_target(1.5)
-		interests[3] = find_target(2.38)
-		interests[4] = find_target(PI)
-		interests[5] = find_target(-2.38)
-		interests[6] = find_target(-1.5)
+		interests[1] = find_target(0.39)
+		interests[2] = find_target(0.78)
+		interests[3] = find_target(1.17)
+		interests[4] = find_target(1.5)
+		interests[5] = find_target(-1.5)
+		interests[6] = find_target(-1.17)
 		interests[7] = find_target(-0.78)
+		interests[8] = find_target(-0.39)
 				
-		if interests.filter(func(number): return number > 0) == []:
-			pass#print("Target not found")
+		if interests.filter(func(number): return number > 0) != []:
+			for index in range(0, interests.size()):
+				if interests[index] == 100:
+					if index == 0:
+						interests[index+1] = 50
+						interests[interests.size()-1] = 50
+					elif index == interests.size()-1:
+						interests[0] = 50
+						interests[index-1] = 50
+					else:
+						interests[index+1] = 50
+						interests[index-1] = 50
+	
+	dangers[0] = find_ally(0)
+	dangers[1] = find_ally(0.39)
+	dangers[2] = find_ally(0.78)
+	dangers[3] = find_ally(1.17)
+	dangers[4] = find_ally(1.5)
+	dangers[5] = find_ally(-1.5)
+	dangers[6] = find_ally(-1.17)
+	dangers[7] = find_ally(-0.78)
+	dangers[8] = find_ally(-0.39)
 	
 	var steering = []
 	for index in range(0, 8):
 		steering.append(interests[index] - dangers[index])
 		
-	if steering.filter(func(number): return number > 0) != []:
-		print("Steering: " + str(steering))
+#	if steering.filter(func(number): return number > 0) != []:
+#		print("Steering: " + str(steering))
 	
 	var best_dir = 0
 	var best_index = -1
@@ -146,7 +172,6 @@ func steer(delta):
 			best_index = index
 		index += 1
 	if best_index != -1:
-		print("Found new best index: " + str(best_index))
 		cached_index = best_index
 	else:
 		best_index = cached_index
@@ -156,19 +181,21 @@ func steer(delta):
 		0:
 			new_dir = 0
 		1:
-			new_dir = 0.78
+			new_dir = 0.39
 		2:
-			new_dir = 1.5
+			new_dir = 0.78
 		3:
-			new_dir = 2.38
+			new_dir = 1.17
 		4:
-			new_dir = PI
+			new_dir = 1.5
 		5:
-			new_dir = -2.38
-		6:
 			new_dir = -1.5
+		6:
+			new_dir = -1.17
 		7:
 			new_dir = -0.78
+		8:
+			new_dir = -0.39
 	
 	if new_dir != -PI:
 		if elapsed > 1:
@@ -183,7 +210,7 @@ func attack(delta: float):
 	if attack_timer < time_between_attacks:
 		return
 	attack_timer = 0
-	raycast_middle.target_position = Vector2(attack_range + 100, 0).rotated(rotation)
+	raycast_middle.target_position = Vector2(attack_range + 100, 0)
 	raycast_middle.force_raycast_update()
 	if raycast_middle.is_colliding():
 		var collider = raycast_middle.get_collider()
@@ -198,9 +225,13 @@ func look_around(delta):
 	elapsed += delta
 	rotation = lerp_angle(rotation, random_amount, elapsed)
 
-func avoid_allies():
-	for ally in nearby_allies:
-		rotation = lerp_angle(rotation, ally.rotation + PI, 0.6)
+func find_ally(angle: float) -> int:
+	raycast_visible.target_position = Vector2(visible_range, 0).rotated(angle)
+	raycast_visible.force_raycast_update()
+	if raycast_visible.is_colliding():
+		if raycast_visible.get_collider().is_in_group("enemies"):
+			return -100
+	return 0
 
 func _on_avoidance_area_body_entered(body):
 	if body.is_in_group("enemies"):
